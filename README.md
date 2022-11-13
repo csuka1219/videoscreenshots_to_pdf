@@ -29,3 +29,7 @@ This app can be very useful when you have a long video of a boring lecture but y
 }
 ```
 
+## How to use
+-For downloading video -> 'video_downloader.py'
+-if you want to create only a JSON file -> 'json_creater.py'
+-if you want to create pdf use 'video_to_pdf.py', but if you want you can create JSON file also here
