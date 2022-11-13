@@ -1,0 +1,4 @@
+numpy==1.23.4
+opencv-python==4.6.0.66
+Pillow==9.3.0
+youtube-dl==2021.12.17
