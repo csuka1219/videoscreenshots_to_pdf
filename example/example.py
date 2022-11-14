@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 
 def main():
     video_downloader.main(is_example=True)
