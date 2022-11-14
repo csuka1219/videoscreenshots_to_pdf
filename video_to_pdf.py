@@ -5,6 +5,7 @@ import os
 import json
 import json_creater
 from PIL import Image
+import re
 
 currentdata_folders = []
 
@@ -19,15 +20,19 @@ def convert_toms(time: str) -> int:
     return milliseconds
 
 
-def get_screenshots() -> None:
+def get_screenshots(is_example=False) -> None:
     """It gets screenshots from the videos at the specific time, and saves it into the 'screenshost/{videoname}' folder"""
     currentdir_path = os.getcwd()
-    with open("videodata.json", "r") as infile:
+    json_fname = "videodata.json"
+    if is_example:
+        json_fname = os.path.join("example", "exampledata.json")
+    with open(json_fname, "r") as infile:
         # * we load the data in a dictionary
         json_data = json.load(infile)
         for data in json_data['data']:
             # * currentdata_folders contains the name of videos that is in the json file
-            currentdata_folders.append(data['fname'])
+            foldername = get_cleantext(data['fname'])
+            currentdata_folders.append(foldername)
             # * this opencv method will open the video
             video = cv.VideoCapture(
                 os.path.join(currentdir_path, "videos", data['fname'])+".mp4")
@@ -39,20 +44,28 @@ def get_screenshots() -> None:
                 video.set(cv.CAP_PROP_POS_MSEC, milliseconds)
                 # * we get that frame and save it into png
                 frame = video.read()[1]
-                if not os.path.exists(os.path.join("screenshots", data['fname'])):
-                    os.makedirs(os.path.join("screenshots", data['fname']))
-                cv.imwrite(os.path.join("screenshots",
-                           data['fname'], f"screenshot-{time}.png"), frame)
+                if not os.path.exists(os.path.join("screenshots", foldername)):
+                    os.makedirs(os.path.join("screenshots", foldername))
+                a = cv.imwrite(os.path.join("screenshots",
+                                            foldername, f"screenshot-{str(time).replace(':','_')}.png"), frame)
+                pass
 
 
-def create_pdf() -> None:
+def get_cleantext(s):
+    return re.sub('[^A-Za-z0-9]+', '', s)
+
+
+def create_pdf(is_example=False) -> None:
     """It creates a pdf from the png-s of the videos that is in the current json file"""
     list_png = []
     for foldername in currentdata_folders:
         png_path = os.path.join(os.getcwd(), "screenshots", foldername)
         list_png.extend([Image.open(os.path.join(png_path, f))
                          for f in os.listdir(png_path) if f.endswith(".png")])
-    list_png[0].save('out.pdf', "PDF", resolution=100.0,
+    pdf_name = "out.pdf"
+    if is_example:
+        pdf_name = os.path.join("example", "out.pdf")
+    list_png[0].save(pdf_name, "PDF", resolution=100.0,
                      save_all=True, append_images=list_png[1:])
 
 
