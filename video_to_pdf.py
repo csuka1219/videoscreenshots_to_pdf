@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import pathlib
 import sys
 import cv2 as cv
 import os
@@ -22,10 +23,13 @@ def convert_toms(time: str) -> int:
 
 def get_screenshots(is_example=False) -> None:
     """It gets screenshots from the videos at the specific time, and saves it into the 'screenshost/{videoname}' folder"""
-    currentdir_path = os.getcwd()
+    currentdir_path = pathlib.Path(__file__).parent.resolve()
     json_fname = "videodata.json"
     if is_example:
-        json_fname = os.path.join("example", "exampledata.json")
+        currentdir_path = os.path.join(
+            currentdir_path, "example")
+        json_fname = os.path.join(
+            currentdir_path, "exampledata.json")
     with open(json_fname, "r") as infile:
         # * we load the data in a dictionary
         json_data = json.load(infile)
@@ -44,27 +48,32 @@ def get_screenshots(is_example=False) -> None:
                 video.set(cv.CAP_PROP_POS_MSEC, milliseconds)
                 # * we get that frame and save it into png
                 frame = video.read()[1]
-                if not os.path.exists(os.path.join("screenshots", foldername)):
-                    os.makedirs(os.path.join("screenshots", foldername))
-                a = cv.imwrite(os.path.join("screenshots",
+                if not os.path.exists(os.path.join(currentdir_path, "screenshots", foldername)):
+                    os.makedirs(os.path.join(currentdir_path,
+                                "screenshots", foldername))
+                a = cv.imwrite(os.path.join(currentdir_path, "screenshots",
                                             foldername, f"screenshot-{str(time).replace(':','_')}.png"), frame)
                 pass
 
 
 def get_cleantext(s):
+    """cleans the string from special characters"""
     return re.sub('[^A-Za-z0-9]+', '', s)
 
 
 def create_pdf(is_example=False) -> None:
     """It creates a pdf from the png-s of the videos that is in the current json file"""
     list_png = []
+    currentdir_path = pathlib.Path(__file__).parent.resolve()
+    if is_example:
+        currentdir_path = os.path.join(currentdir_path, "example")
     for foldername in currentdata_folders:
-        png_path = os.path.join(os.getcwd(), "screenshots", foldername)
+        png_path = os.path.join(currentdir_path, "screenshots", foldername)
         list_png.extend([Image.open(os.path.join(png_path, f))
                          for f in os.listdir(png_path) if f.endswith(".png")])
     pdf_name = "out.pdf"
     if is_example:
-        pdf_name = os.path.join("example", "out.pdf")
+        pdf_name = os.path.join(currentdir_path, "out.pdf")
     list_png[0].save(pdf_name, "PDF", resolution=100.0,
                      save_all=True, append_images=list_png[1:])
 
