@@ -5,13 +5,14 @@ import youtube_dl
 import os
 
 
-def main(is_example=False) -> None:
+def main(is_example=False, example_video_url=None) -> None:
     # *default video
-    link = "https://www.youtube.com/watch?v=h9a-jL_uY38"
+    link = None
     currentdir_path = pathlib.Path(__file__).parent.resolve()
     if not is_example:
         link = input("Enter the link of video: ")
     else:
+        link = example_video_url
         currentdir_path = os.path.join(currentdir_path, "example")
     if not os.path.exists("videos"):
         os.makedirs(os.path.join(currentdir_path, "videos"))
