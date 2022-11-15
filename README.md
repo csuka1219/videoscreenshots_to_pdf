@@ -35,4 +35,6 @@ This app can be very useful when you have a long video of a boring lecture but y
 - if you want to create pdf use 'video_to_pdf.py', but if you want you can create JSON file also here
 - currently works with mp4 video format
 
-## Project idea from [Laszlo Szathmary](https://github.com/jabbalaci)
+## Project Idea
+
+The project idea came from [Laszlo Szathmary](https://github.com/jabbalaci).
