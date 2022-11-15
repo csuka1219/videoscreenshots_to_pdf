@@ -6,7 +6,7 @@ import os
 
 
 def main(is_example=False) -> None:
-    # test 10mp video: https://www.youtube.com/watch?v=BaW_jenozKc
+    # *default video
     link = "https://www.youtube.com/watch?v=h9a-jL_uY38"
     currentdir_path = pathlib.Path(__file__).parent.resolve()
     if not is_example:
@@ -18,7 +18,6 @@ def main(is_example=False) -> None:
     ydl_opts = {
         'outtmpl': os.path.join(currentdir_path, "videos", '%(title)s.%(ext)s'),
     }
-    # *default video
 
     try:
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
